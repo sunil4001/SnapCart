@@ -1,131 +1,162 @@
 <%- include('./partials/header') %>
 
+
+
 <% if(success.length>0){ %>
-    <div
-      class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 rounded-md bg-blue-500"
-    >
-      <span class="inline-block mt-1 mb-1 text-white"> <%= success %> </span>
-    </div>
-<% } %>
+        <div class="fixed top-20 left-1/2 -translate-x-1/2 z-50 p-3 rounded-md bg-blue-500 shadow-lg">
+            <span class="inline-block mt-1 mb-1 text-white font-medium"> <%= success %> </span>
+        </div>
+    <% } %>
 
-<!-- Real-time Notification Container -->
-<div id="realTimeNotification" class="fixed top-5 right-5 z-50 transition-all duration-300 opacity-0 transform translate-y-[-20px]">
-    <div class="bg-red-500 text-white px-4 py-2 rounded-md shadow-lg">
-        <span id="notificationText"></span>
+    <!-- Real-time Notification Container -->
+    <div id="realTimeNotification" class="fixed top-5 right-5 z-50 transition-all duration-300 opacity-0 transform translate-y-[-20px]">
+        <div class="bg-red-500 text-white px-4 py-3 rounded-md shadow-lg flex items-center">
+            <i class="ri-information-line mr-2"></i>
+            <span id="notificationText"></span>
+        </div>
     </div>
-</div>
 
-<div class="w-full h-screen flex items-start px-20 py-20">
-    <div class="w-[25%] flex h-screen flex-col items-start">
-        <div class="flex items-center gap-2">
-            <h3>sort by</h3>
-            <form action="/shop">
-                <select class="border-[1px] px-2 py-1" name="sortby" id="">
-                    <option value="popular">Popular</option>
-                    <option value="newest">Newest</option>
-                </select>
-            </form>
-        </div>
-        <div class="flex flex-col mt-20">
-            <a class="block w-fit mb-2" href="">New Collection</a>
-            <a class="block w-fit mb-2" href="">All Products</a>
-            <a class="block w-fit mb-2" href="">Discounted Products</a>
-        </div>
-        <div class="mt-32">
-            <a class="block w-fit mb-2" href="">Filter by :</a>
-            <a class="block w-fit mb-2" href="">Availability</a>
-            <a class="block w-fit mb-2" href="">Discount</a>
-        </div>
-    </div>
-    <div class="w-[75%] flex flex-col gap-5 h-screen">
-        <div class="flex items-start gap-5">
-            <% products.forEach(product => { %>
-            <div class="w-60" id="product-<%= product._id %>">
-                <div class="w-full flex items-center justify-center h-52 bg-yellow-500 ">
-                    <img class="w-full h-full object-cover" src="data:image/png;base64,<%= product.image.toString('base64') %>" alt="">
+    <main class="w-full px-4 py-8">
+        <div class="flex flex-col lg:flex-row gap-8 w-full">
+            <!-- Sidebar -->
+            <div class="w-full lg:w-1/5 bg-white p-6 rounded-xl shadow-sm h-fit sticky top-24">
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-dark mb-4 flex items-center">
+                        <i class="ri-filter-line mr-2"></i> Sort By
+                    </h3>
+                    <form action="/shop">
+                        <select class="w-full border border-gray-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent" name="sortby" id="">
+                            <option value="popular">Popular</option>
+                            <option value="newest">Newest</option>
+                        </select>
+                    </form>
                 </div>
-                <div class="flex justify-between bg-[<%= product.panelcolor %>] items-center px-4 py-4 text-[<%= product.textcolor %>]">
-                    <div>
-                        <h3><%= product.name %></h3>
-                        <h4>₹<%= product.price %></h4>
-                        <div class="text-sm stock-info" id="stock-<%= product._id %>">
-                            <% if(product.stock > 0) { %>
-                                In Stock (<%= product.stock %> left)
-                            <% } else { %>
-                                <span class="text-red-600 font-bold">Out of Stock</span>
-                            <% } %>
-                        </div>
+                
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-dark mb-4 flex items-center">
+                        <i class="ri-price-tag-3-line mr-2"></i> Categories
+                    </h3>
+                    <div class="flex flex-col space-y-2">
+                        <a class="filter-link text-gray-600" href="">New Collection</a>
+                        <a class="filter-link text-gray-600" href="">All Products</a>
+                        <a class="filter-link text-gray-600" href="">Discounted Products</a>
                     </div>
-                    <a class="w-7 h-7 flex items-center justify-center rounded-full bg-white add-to-cart-btn <%= product.stock <= 0 ? 'opacity-50 cursor-not-allowed' : '' %>" 
-                       href="<%= product.stock > 0 ? '/addtocart/' + product._id : '#' %>"
-                       id="btn-<%= product._id %>">
-                        <i class="ri-add-line"></i>
-                    </a>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-dark mb-4 flex items-center">
+                        <i class="ri-filter-3-line mr-2"></i> Filters
+                    </h3>
+                    <div class="flex flex-col space-y-3">
+                        <a class="filter-link text-gray-600" href="">Availability</a>
+                        <a class="filter-link text-gray-600" href="">Discount</a>
+                        <a class="filter-link text-gray-600" href="">Price Range</a>
+                        <a class="filter-link text-gray-600" href="">Brand</a>
+                    </div>
                 </div>
             </div>
-            <% }) %>
+
+            <!-- Products Grid -->
+            <div class="w-full">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <% products.forEach(product => { %>
+                    <div class="product-card bg-white rounded-xl overflow-hidden shadow-md" id="product-<%= product._id %>">
+                        <div class="w-full h-60 bg-gray-100 overflow-hidden">
+                            <img class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" src="data:image/png;base64,<%= product.image.toString('base64') %>" alt="<%= product.name %>">
+                        </div>
+                        <div class="flex justify-between items-center px-4 py-4" style="background-color: <%= product.panelcolor %>; color: <%= product.textcolor %>">
+                            <div>
+                                <h3 class="font-semibold text-lg"><%= product.name %></h3>
+                                <h4 class="font-bold text-xl">₹<%= product.price %></h4>
+                                <div class="text-sm stock-info mt-1" id="stock-<%= product._id %>">
+                                    <% if(product.stock > 0) { %>
+                                        <span class="inline-flex items-center text-green-600">
+                                            <i class="ri-checkbox-circle-fill mr-1"></i> In Stock (<%= product.stock %> left)
+                                        </span>
+                                    <% } else { %>
+                                        <span class="inline-flex items-center text-red-600 font-semibold">
+                                            <i class="ri-close-circle-fill mr-1"></i> Out of Stock
+                                        </span>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <a class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-dark shadow-md hover:shadow-lg transition-shadow add-to-cart-btn <%= product.stock <= 0 ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110 transition-transform' %>" 
+                               href="<%= product.stock > 0 ? '/addtocart/' + product._id : '#' %>"
+                               id="btn-<%= product._id %>">
+                                <i class="ri-add-line"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
+    </main>
 
-<!-- Socket.io Client -->
-<% if(io) { %>
-<script src="/socket.io/socket.io.js"></script>
-<script>
-    const socket = io();
-    
-    // Join rooms for all products on the page
-    <% products.forEach(product => { %>
-        socket.emit('join-product-room', '<%= product._id %>');
-    <% }) %>
 
-    // Listen for stock updates
-    socket.on('product-stock-update', function(data) {
-        console.log('Stock update received:', data);
+
+    <!-- Socket.io Client -->
+    <% if(io) { %>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
         
-        const stockElement = document.getElementById('stock-' + data.productId);
-        const button = document.getElementById('btn-' + data.productId);
-        const notification = document.getElementById('realTimeNotification');
-        const notificationText = document.getElementById('notificationText');
-        
-        if (stockElement) {
-            if (data.stock > 0) {
-                stockElement.innerHTML = 'In Stock (' + data.stock + ' left)';
-            } else {
-                stockElement.innerHTML = '<span class="text-red-600 font-bold">Out of Stock</span>';
-            }
-        }
-        
-        if (button) {
-            if (data.stock <= 0) {
-                button.classList.add('opacity-50', 'cursor-not-allowed');
-                button.href = '#';
-            } else {
-                button.classList.remove('opacity-50', 'cursor-not-allowed');
-                button.href = '/addtocart/' + data.productId;
-            }
-        }
-        
-        // Show notification
-        if (notification && notificationText) {
-            notificationText.textContent = data.message || 'Stock updated!';
-            notification.classList.remove('opacity-0', 'translate-y-[-20px]');
-            notification.classList.add('opacity-100', 'translate-y-0');
+        // Join rooms for all products on the page
+        <% products.forEach(product => { %>
+            socket.emit('join-product-room', '<%= product._id %>');
+        <% }) %>
+
+        // Listen for stock updates
+        socket.on('product-stock-update', function(data) {
+            console.log('Stock update received:', data);
             
-            // Hide notification after 3 seconds
-            setTimeout(() => {
-                notification.classList.remove('opacity-100', 'translate-y-0');
-                notification.classList.add('opacity-0', 'translate-y-[-20px]');
-            }, 3000);
-        }
-    });
+            const stockElement = document.getElementById('stock-' + data.productId);
+            const button = document.getElementById('btn-' + data.productId);
+            const notification = document.getElementById('realTimeNotification');
+            const notificationText = document.getElementById('notificationText');
+            
+            if (stockElement) {
+                if (data.stock > 0) {
+                    stockElement.innerHTML = '<span class="inline-flex items-center text-green-600"><i class="ri-checkbox-circle-fill mr-1"></i> In Stock (' + data.stock + ' left)</span>';
+                } else {
+                    stockElement.innerHTML = '<span class="inline-flex items-center text-red-600 font-semibold"><i class="ri-close-circle-fill mr-1"></i> Out of Stock</span>';
+                }
+            }
+            
+            if (button) {
+                if (data.stock <= 0) {
+                    button.classList.add('opacity-50', 'cursor-not-allowed');
+                    button.classList.remove('hover:scale-110');
+                    button.href = '#';
+                } else {
+                    button.classList.remove('opacity-50', 'cursor-not-allowed');
+                    button.classList.add('hover:scale-110');
+                    button.href = '/addtocart/' + data.productId;
+                }
+            }
+            
+            // Show notification
+            if (notification && notificationText) {
+                notificationText.textContent = data.message || 'Stock updated!';
+                notification.classList.remove('opacity-0', 'translate-y-[-20px]');
+                notification.classList.add('opacity-100', 'translate-y-0');
+                
+                // Hide notification after 3 seconds
+                setTimeout(() => {
+                    notification.classList.remove('opacity-100', 'translate-y-0');
+                    notification.classList.add('opacity-0', 'translate-y-[-20px]');
+                }, 3000);
+            }
+        });
 
-    // Listen for cart count updates (if you want to update cart counters globally)
-    socket.on('cart-count-update', function(data) {
-        // You could update a cart counter in the header here
-        console.log('Cart updated for user:', data.userId, 'Count:', data.cartCount);
-    });
-</script>
-<% } %>
+        // Listen for cart count updates
+        socket.on('cart-count-update', function(data) {
+            const cartCounter = document.getElementById('cart-counter');
+            if (cartCounter) {
+                cartCounter.textContent = data.cartCount;
+            }
+        });
+    </script>
+    <% } %>
 
 <%- include('./partials/footer') %>
