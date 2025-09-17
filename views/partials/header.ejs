@@ -1,29 +1,87 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>SnapCart - Shop</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#F59E0B',
+                        dark: '#1F2937',
+                        light: '#F9FAFB',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .product-card {
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .filter-link {
+            transition: all 0.2s ease;
+        }
+        
+        .filter-link:hover {
+            padding-left: 8px;
+            color: #3B82F6;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #c5c5c5;
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
 </head>
 
-<body class="font-['helvetica_now_display']">
-    <nav class="w-full flex justify-between px-5 py-3">
-        <h3 class="text-xl">Scatch</h3>
+<body class="bg-gray-50">
+    <nav class="w-full flex justify-between items-center px-6 py-4 bg-white shadow-sm">
+        <h3 class="text-xl font-bold text-primary">SnapCart</h3>
         <% var loggedin = typeof loggedin !== 'undefined' ? loggedin : true %>
         <% if(loggedin)  {%>
-            <div class="flex gap-5 items-center">
-                <a href="/shop">Shop</a>
-                <a href="/cart" class="flex items-center gap-1">
+            <div class="flex gap-6 items-center">
+                <a href="/shop" class="text-dark hover:text-primary transition-colors font-medium">Shop</a>
+                <a href="/cart" class="flex items-center gap-1 text-dark hover:text-primary transition-colors font-medium">
+                    <i class="ri-shopping-cart-line"></i>
                     Cart
-                    <span id="cart-counter" class="bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                        <!-- Cart count will be updated dynamically -->
-                    </span>
+                    
                 </a>
-                <a href="/account">My Account</a>
-                <a class="text-red-600" href="users/logout">Logout</a>
+                <a href="/account" class="text-dark hover:text-primary transition-colors font-medium">My Account</a>
+                <a class="text-red-500 hover:text-red-600 transition-colors font-medium" href="users/logout">Logout</a>
             </div>
         <% }%>
     </nav>
